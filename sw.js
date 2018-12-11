@@ -1,5 +1,5 @@
 const staticCacheName = "udacitynd001p5";
-
+//build list of assets to cache
 let cachePayload = [
   "/",
   "./index.html",
@@ -21,7 +21,7 @@ let cachePayload = [
   "./img/9.jpg",
   "./img/10.jpg"
 ];
-
+//install the service worker
 self.addEventListener('install', function(event) {
 	event.waitUntil(
 		caches.open(`${staticCacheName}`).then(function(cache) {
@@ -29,7 +29,7 @@ self.addEventListener('install', function(event) {
         })
     );
 });
-
+//intercept fetch requests to grab from cache - if not present, add to cache for future use
 self.addEventListener('fetch', function(event) {
   event.respondWith(
       caches.match(event.request).then(function(response) {
@@ -37,9 +37,9 @@ self.addEventListener('fetch', function(event) {
           return response;
         }else{
           return fetch(event.request).then(function(response){
-            let clone = response.clone();
+            let fetchClone = response.clone();
             caches.open(`${staticCacheName}`).then(function(cache){
-              cache.put(event.request, clone);
+              cache.put(event.request, fetchClone);
             });
             return response;
           });
